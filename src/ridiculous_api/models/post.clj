@@ -1,4 +1,5 @@
 (ns ridiculous-api.models.post
+  (:refer-clojure :exclude [find])
   (:require [ridiculous-api.db :as db])
   (:require [korma.core :refer :all]))
 
@@ -21,3 +22,11 @@
             (where {:id id})
             (limit 1))
     (first)))
+
+(defn change
+  "Update a post with the given id and new params"
+  [id {:keys [:content], :as args}]
+  (->
+    (update posts
+            (set-fields args)
+            (where {:id id}))))

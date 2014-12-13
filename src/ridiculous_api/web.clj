@@ -14,7 +14,7 @@
 
 (def app
   (-> (handler/api app-routes)
-      (middleware/wrap-json-params)
+      (middleware/wrap-json-body)
       (middleware/wrap-json-response)))
 
 (defn start [port]

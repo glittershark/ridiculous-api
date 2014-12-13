@@ -1,8 +1,15 @@
 (ns ridiculous-api.controllers.posts
   (:require [ridiculous-api.models.post :as post]
             [ring.util.response :as ring]
-            [compojure.core :refer [GET POST DELETE defroutes]]
+            [compojure.core :refer [GET POST PUT DELETE defroutes]]
             [clojure.string :as str]))
+
+(defmacro try-parse-int [[bound id] & body]
+  `(try
+     (let [~bound (Integer. ~id)]
+       ~@body)
+     (catch NumberFormatException e#
+       {:error (str "Invalid format for integer: " ~id)})))
 
 (defn index []
   (ring/response (post/all)))
@@ -12,14 +19,19 @@
     (ring/response {:error "Content cannot be blank" :original-args args})
     (ring/response (post/create args))))
 
-(defn show [id]
+(defn show [_id]
   (ring/response
-    (try
-      (post/find (Integer. id))
-      (catch NumberFormatException e
-        {:error (str "Invalid id " id)}))))
+    (try-parse-int [id _id]
+                   (post/find (Integer. id)))))
+
+(defn update [_id {:keys [:content], :as args}]
+  (ring/response
+    (try-parse-int [id _id]
+                   (post/change id args)
+                   (post/find id))))
 
 (defroutes routes
-  (POST "/posts"     {post :params}     (create post))
-  (GET  "/"          []                 (index))
-  (GET  "/posts/:id" {{id :id} :params} (show id)))
+  (POST "/posts" {post :body} (create post))
+  (GET "/" [] (index))
+  (GET "/posts/:id" {{id :id} :params} (show id))
+  (PUT "/posts/:id" {{id :id} :params post :body} (update id post)))
