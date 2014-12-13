@@ -6,6 +6,7 @@
                  [korma "0.4.0"]
                  [lobos "1.0.0-beta3"]
                  [org.clojure/clojure "1.6.0"]
+                 [org.clojure/core.match "0.3.0-alpha3"]
                  [org.clojure/java.jdbc "0.3.5"]
                  [org.clojure/data.json "0.2.5"]
                  [postgresql "9.1-901.jdbc4"]
