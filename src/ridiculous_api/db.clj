@@ -17,7 +17,7 @@
                             :user     user
                             :password password
                             :port     (.getPort uri)
-                            :db       (.getPath uri)}))))
+                            :db       (subs (.getPath uri) 1)}))))
 
       test-options prod-options
       development-options prod-options]
