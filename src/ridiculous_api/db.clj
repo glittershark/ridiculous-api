@@ -16,7 +16,8 @@
                            {:host     (.getHost uri)
                             :user     user
                             :password password
-                            :port     (.getPort uri)}))))
+                            :port     (.getPort uri)
+                            :db       (.getPath uri)}))))
 
       test-options prod-options
       development-options prod-options]
