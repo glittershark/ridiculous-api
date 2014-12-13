@@ -1,6 +1,7 @@
 (ns ridiculous-api.db
   (:require [ridiculous-api.lib.env :as env]
-            [korma.db :refer :all])
+            [korma.db :refer :all]
+            [clojure.string :refer [split]])
   (:import (java.net.URI)))
 
 (let [prod-options (postgres
@@ -10,11 +11,12 @@
                           :db "ridiculous"
                           :user "ridiculous"
                           :password "password"}
-                         (let [uri (new java.net.URI env-url)]
-                           {:host     (.getHost     uri)
-                            :user     (.getUser     uri)
-                            :password (.getPassword uri)
-                            :port     (.getPort     uri)}))))
+                         (let [uri (new java.net.URI env-url)
+                               [user password] (split (.getUserInfo uri) #":")]
+                           {:host     (.getHost uri)
+                            :user     user
+                            :password password
+                            :port     (.getPort uri)}))))
 
       test-options prod-options
       development-options prod-options]
